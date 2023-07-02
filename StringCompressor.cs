@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace WebCrawler
 {
+    //1.50
+    //Source:https://stackoverflow.com/questions/7343465/compression-decompression-string-with-c-sharp
     internal static class StringCompressor
     {
         public static string CompressString(this string text)

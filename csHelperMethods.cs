@@ -44,6 +44,8 @@ namespace WebCrawler
                 var ctx = ((System.Data.Entity.Infrastructure.IObjectContextAdapter)context).ObjectContext;
                 ctx.ExecuteStoreCommand("truncate table tblMainUrls");
             }
+
+            
         }
 
 
@@ -136,7 +138,7 @@ namespace WebCrawler
             }
             Interlocked.Increment(ref irCrawledUrlCount);
 
-            swTimerCrawling.Stop();
+            swTimerCrawling.Stop();  //tarama bittikten sonra kronometreyi durdur
             crawResult.FetchTimeMS = Convert.ToInt32(swTimerCrawling.ElapsedMilliseconds);
             crawResult.LastCrawlingDate = DateTime.Now;
             saveCrawInDatabase(crawResult);
@@ -218,11 +220,21 @@ namespace WebCrawler
                         if (!string.IsNullOrEmpty(crawledResult.SourceCode))
                         {
                             double dblOriginalSourceCodeLenght = crawledResult.SourceCode.Length;
-                            crawledResult.SourceCode = crawledResult.SourceCode.CompressString();
-                            crawledResult.CompressionPercent = Convert.ToByte(
-                                Math.Floor(
-                                    (crawledResult.SourceCode.Length.ToDouble() / dblOriginalSourceCodeLenght) * 100)
-                                );
+                             crawledResult.SourceCode = crawledResult.SourceCode.CompressString();
+                             crawledResult.CompressionPercent = Convert.ToByte(
+                                 Math.Floor(
+                                     ((crawledResult.SourceCode.Length.ToDouble() / dblOriginalSourceCodeLenght.ToDouble()) * 100))
+                                 );
+                           /* double compressionRatio = (crawledResult.SourceCode.Length.ToDouble() / dblOriginalSourceCodeLenght) * 100;
+
+                            if (compressionRatio >= 0 && compressionRatio <= 100)
+                            {
+                                crawledResult.CompressionPercent = Convert.ToByte(Math.Floor(compressionRatio));
+                            }
+                            else
+                            {
+                                // Geçersiz bir değer var, hata işleme yapılabilir veya farklı bir yaklaşım benimsenebilir.
+                            }*/
                         }
                         crawledResult.CrawlTryCounter = 0;
 
@@ -333,8 +345,10 @@ namespace WebCrawler
                 foreach (HtmlNode link in vrNodes) //xpath notation
                 {
                     HtmlAttribute att = link.Attributes["href"];
-                    //this is used to convert from relative path to absolute path
+                 //this is used to convert from relative path to absolute path
                     var absoluteUri = new Uri(baseUri, att.Value.ToString().decodeUrl());
+                    ///var absoluteUri = new Uri(baseUri, att.Value.ToString());
+                    ///var absoluteUri = new Uri(baseUri, att.Value);
 
                     if (!absoluteUri.ToString().StartsWith("http://") && !absoluteUri.ToString().StartsWith("https://"))
                         continue;
@@ -412,7 +426,7 @@ namespace WebCrawler
         }
 
 
-        /**Bu method, verilen URL adresini aşağıdaki işlemleri yaparak normalize eder:
+        /*****Bu method, verilen URL adresini aşağıdaki işlemleri yaparak normalize eder:
         URL adresindeki boşlukları Trim() metoduyla siler.
         URL adresini CultureInfo("en-US") kullanarak ingilizce küçük harf karakterlerine çevirir.
         Bu işlemler, verilen URL adresini standart hale getirir ve aynı adresin farklı şekillerde yazılmasından kaynaklanan hataları önler.**/
@@ -421,12 +435,11 @@ namespace WebCrawler
         //&& CultureInfo (2022110837)
         public static string normalizeUrl(this string srUrl)
         {
-            return srUrl.ToLower(new System.Globalization.CultureInfo("en-US")).Trim();
+           return srUrl.ToLower(new System.Globalization.CultureInfo("en-US")).Trim();
         }
 
 
-
-        /**Bu kod, verilen string veriyi SHA256 şifreleme algoritması ile şifreler ve sonuç olarak 64 karakterli bir hexadecimal string döndürür. İlk olarak, SHA256 şifreleme nesnesi oluşturulur. Daha sonra, verilen string veri UTF8 kodlaması ile byte dizisine dönüştürülür ve bu byte dizisi SHA256 şifreleme algoritması ile şifrelenir. Son olarak, şifrelenmiş byte dizisi hexadecimal string'e dönüştürülür ve döndürülür.**/
+        /*****Bu kod, verilen string veriyi SHA256 şifreleme algoritması ile şifreler ve sonuç olarak 64 karakterli bir hexadecimal string döndürür. İlk olarak, SHA256 şifreleme nesnesi oluşturulur. Daha sonra, verilen string veri UTF8 kodlaması ile byte dizisine dönüştürülür ve bu byte dizisi SHA256 şifreleme algoritması ile şifrelenir. Son olarak, şifrelenmiş byte dizisi hexadecimal string'e dönüştürülür ve döndürülür.**/
         //Source:https://www.c-sharpcorner.com/article/compute-sha256-hash-in-c-sharp/
         //&& This keyword usage example (2022110806)
         //&& StringBuilder(2022110833)
@@ -450,6 +463,14 @@ namespace WebCrawler
         }
 
 
+        /*****Bu metod srUrl adlı bir string'in normalize edilmiş hali üzerinden bir SHA256 hash hesaplaması yapar. Öncelikle srUrl değişkeninin normalizeUrl metodu ile lowercase ve trim işlemi yapılır. Daha sonra, hesaplanacak olan hash değeri için ComputeSha256Hash metodu kullanılır ve hesaplanan hash değeri döndürülür.**/
+        //&& This keyword usage example (2022110806)
+        //**yukarıdaki iki methodun birleşimi
+        static string ComputeHashOfOurSystem(this string srUrl)
+        {
+            return srUrl.normalizeUrl().ComputeSha256Hash();
+        }
+
 
         /**Bu metod, verilen URL'nin kök URL'sini döndürür. Örneğin, verilen URL "https://www.example.com/page1" olsun, metod "www.example.com" döndürür. Bunu yapmak için, bir Uri nesnesi oluşturulur ve uri.Host özelliği kullanılır.**/
         //&& This keyword usage example (2022110806)
@@ -458,18 +479,6 @@ namespace WebCrawler
             var uri = new Uri(srUrl); //**Uri (Uniform Resource Identifier), bir URL'nin veya URN'nin (Uniform Resource Name) tanımlanmasına yarayan bir veri tipidir. Uri veri tipi, internet üzerindeki bir dosya, kaynak veya verinin adresini tanımlamaya yarar.*/
             return uri.Host; //**Host, bir URL'de verilen bir internet kaynağının barındığı sunucunun adıdır. Örneğin, bir URL http://www.google.com olsun, host "www.google.com" olacaktır.**/
         }
-
-
-
-        /**Bu metod srUrl adlı bir string'in normalize edilmiş hali üzerinden bir SHA256 hash hesaplaması yapar. Öncelikle srUrl değişkeninin normalizeUrl metodu ile lowercase ve trim işlemi yapılır. Daha sonra, hesaplanacak olan hash değeri için ComputeSha256Hash metodu kullanılır ve hesaplanan hash değeri döndürülür.**/
-        //&& This keyword usage example (2022110806)
-        static string ComputeHashOfOurSystem(this string srUrl)
-        {
-            return srUrl.normalizeUrl().ComputeSha256Hash();
-        }
-
-
-
 
         /**
             Bu kod, bir log dosyası oluşturmak ve bu dosyaya mesajlar yazmak için kullanılan bir metodu tanımlar.

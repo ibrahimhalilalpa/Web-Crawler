@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Web Crawling" Height="500" Width="1000" Background="Cyan">
     <Grid>
-        <TextBox x:Name="txtInputUrl" HorizontalAlignment="Left" Margin="135,21,0,0" TextWrapping="Wrap" Text="Enter Root URL" VerticalAlignment="Top" Width="385" Height="27"/>
+        <TextBox x:Name="txtInputUrl" HorizontalAlignment="Left" Margin="135,21,0,0" TextWrapping="Wrap" Text="Enter Root URL" VerticalAlignment="Top" Width="450" Height="27" MouseDoubleClick="txtInputUrl_MouseDoubleClick"/>
         <Button Content="Start Crawling" Name="btnCrawl" HorizontalAlignment="Left" Margin="135,98,0,0" Background="Green" VerticalAlignment="Top" Height="28" Width="112" Click="btnCrawl_Click"/>
         <ListBox x:Name="listBoxResults" Margin="10,165,64,10">
             <ListBox.ItemTemplate>
@@ -18,10 +18,10 @@
         </ListBox>
         <Button Content="Test DB" Name="btnTest" HorizontalAlignment="Left" Margin="384,99,0,0" VerticalAlignment="Top" Height="27" RenderTransformOrigin="-0.151,0.41" Width="64" Click="btnTest_Click"/>
         <Button Content="Clear DB" x:Name="btnClearDB" HorizontalAlignment="Left" Margin="456,99,0,0" VerticalAlignment="Top" Height="27" RenderTransformOrigin="-0.151,0.41" Width="64" Click="btnClearDB_Click"/>
-        <Button Content="Stop Crawling" x:Name="btnStopCrawling" HorizontalAlignment="Left" Background="Red" Margin="266,98,0,0" VerticalAlignment="Top" Height="27" RenderTransformOrigin="-0.151,0.41" Width="103" Click="btnStopCrawling_Click"/>
-        <Label Content="URL to crawl:" Background="DarkCyan" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="42,23,0,0" VerticalAlignment="Top" Width="88"/>
+        <Button Content="Stop Crawling" x:Name="btnStopCrawling" HorizontalAlignment="Left" Background="Red" Margin="266,98,0,0" VerticalAlignment="Top" Height="27" RenderTransformOrigin="-0.151,0.41" Width="103"/>
+        <Label Content="URL to crawl:" Background="DarkCyan" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="11,23,0,0" VerticalAlignment="Top" Width="119"/>
         <Label Content="Ready URL Options:" Background="Chocolate" HorizontalAlignment="Left" Margin="10,53,0,0" VerticalAlignment="Top" Width="120"/>
-        <ComboBox Name="ComboBoxUrls" SelectionChanged="ComboBoxUrls_SelectionChanged" HorizontalAlignment="Left" Margin="135,52,0,0" VerticalAlignment="Top" Width="385" Height="27">
+        <ComboBox Name="ComboBoxUrls" SelectionChanged="ComboBoxUrls_SelectionChanged" HorizontalAlignment="Left" Margin="135,52,0,0" VerticalAlignment="Top" Width="449" Height="27">
             <ComboBoxItem>https://toros.edu.tr/</ComboBoxItem>
             <ComboBoxItem>https://www.udemy.com/</ComboBoxItem>
             <ComboBoxItem>https://www.unicefturk.org/</ComboBoxItem>

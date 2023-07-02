@@ -71,12 +71,16 @@ l        istBoxResults.ItemsSource = UserLogs bu satır, WPF uygulamalarında ku
             using (DBCrawling db = new DBCrawling())
 
             {
-                //var all = db.tblMainUrls.Select(pr => pr);
-                //db.tblMainUrls.RemoveRange(all);
+                //**remove data from database / (veritabanındaki verileri kaldırma)
+                /*
+                 * var all = db.tblMainUrls.Select(pr => pr);
+                db.tblMainUrls.RemoveRange(all);
+                db.SaveChanges();
+                */ //(working)
 
                 //**remove data from database / (veritabanındaki verileri kaldırma)
 
-               //(1)
+                //(1)
                 db.tblMainUrls.RemoveRange(db.tblMainUrls);
                //(2)
                 //foreach (var vrDBData in db.tblMainUrls)
@@ -94,7 +98,7 @@ l        istBoxResults.ItemsSource = UserLogs bu satır, WPF uygulamalarında ku
                     Url = "www.toros.edu.tr",
                     DiscoverDate = new DateTime(1881, 01, 01),
                     LinkDepthLevel = 1,
-                    ParentUrlHash = "hashhh",
+                    ParentUrlHash = "hash",
                     LastCrawlingDate = new DateTime(1938, 11, 10),
                     SourceCode = "hh",
                     FetchTimeMS = 300,
@@ -120,10 +124,12 @@ l        istBoxResults.ItemsSource = UserLogs bu satır, WPF uygulamalarında ku
             //csHelperMethods.clearDatebase();
 
             //(2)
+
             clearDatebase(); //( //using static WebCrawler.csHelperMethods;)
  
 
-            MessageBox.Show("All data in database deleted!");
+            MessageBox.Show("All data in database deleted!");    
+
         }
 
 
@@ -131,7 +137,7 @@ l        istBoxResults.ItemsSource = UserLogs bu satır, WPF uygulamalarında ku
 
 
 
-
+        /*
         //**********************************************************************************************************************************************
         //+// Taramayı durdurma
 
@@ -178,7 +184,7 @@ l        istBoxResults.ItemsSource = UserLogs bu satır, WPF uygulamalarında ku
 
         }
 
-        private DispatcherTimer _timer;
+        private DispatcherTimer _timer;*/
 
         //**********************************************************************************************************************************************
 
@@ -319,6 +325,15 @@ l        istBoxResults.ItemsSource = UserLogs bu satır, WPF uygulamalarında ku
             ComboBoxItem selectedItem = ComboBoxUrls.SelectedItem as ComboBoxItem;
             txtInputUrl.Text = selectedItem.Content.ToString();
         }
+
+        //**// TextBox'a çift tıklandığında içindeki yazıyı silme.
+
+        private void txtInputUrl_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            txtInputUrl.Text = "";
+        }
+
+
 
     }
 
